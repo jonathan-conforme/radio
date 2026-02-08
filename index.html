@@ -1,51 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Guayaco</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Guayaco FM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Tailwind CDN (para arrancar rápido) -->
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen flex items-center justify-center">
+  </head>
 
+  <body
+    class="bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen flex items-center justify-center"
+  >
     <div class="w-full max-w-md text-center px-6">
-        
-        <!-- Logo / Nombre -->
-        <h1 class="text-5xl font-extrabold mb-2 tracking-tight">
-            GUAYACO
-        </h1>
 
-        <p class="text-gray-300 mb-8">
-            Humor 🎙️ · Música 🎶 · Cero vergüenza
+      <!-- LOGO -->
+      <h1 class="text-5xl font-extrabold mb-2 tracking-tight">
+        <span class="text-[#2AA4D9]">GUAYACO</span>
+        <span class="text-[#075985]">FM</span>
+      </h1>
+
+      <p class="text-gray-300 mb-8">
+        Humor 🎙️ · Música 🎶 · Cero vergüenza
+      </p>
+
+      <!-- PLAYER CARD -->
+      <div class="bg-gray-900 rounded-2xl p-6 shadow-xl">
+
+        <!-- STATUS -->
+        <p id="statusText" class="text-sm text-green-400 mb-3">
+          🟢 EN VIVO
         </p>
 
-        <!-- Reproductor -->
-        <div class="bg-gray-900 rounded-2xl p-6 shadow-xl">
-            <p class="text-sm text-green-400 mb-2">🟢 EN VIVO</p>
+        <!-- AUDIO (hidden) -->
+        <audio
+          id="radio"
+          src="https://TU_STREAM_AQUI/stream"
+          preload="none"
+        ></audio>
 
-            <audio
-                id="radioPlayer"
-                src="https://TU_STREAM_AQUI/stream"
-                controls
-                autoplay
-                class="w-full"
-            ></audio>
+        <!-- CUSTOM PLAYER -->
+        <div
+          class="bg-white rounded-full flex items-center gap-4 px-5 py-3 shadow-lg"
+        >
+          <!-- PLAY BUTTON -->
+          <button
+            id="playBtn"
+            aria-label="Reproducir radio"
+            class="w-12 h-12 rounded-full bg-[#2AA4D9] text-white text-xl
+                   flex items-center justify-center
+                   shadow-lg shadow-[#2AA4D9]/40
+                   hover:bg-[#1d8bbf]
+                   transition
+                   animate-pulse"
+          >
+            ▶️
+          </button>
 
-            <p class="text-xs text-gray-400 mt-4">
-                Si desafinamos, es parte del show 😎
-            </p>
+          <!-- LIVE INDICATOR BAR -->
+          <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              id="liveBar"
+              class="h-full bg-[#075985] w-0 transition-all duration-500"
+            ></div>
+          </div>
+
+          <span class="text-sm font-semibold text-gray-600">
+            LIVE
+          </span>
         </div>
 
-        <!-- Redes -->
-        <div class="flex justify-center gap-4 mt-8 text-sm text-gray-300">
-            <a href="#" class="hover:text-white">TikTok</a>
-            <a href="#" class="hover:text-white">Instagram</a>
-            <a href="#" class="hover:text-white">YouTube</a>
-        </div>
+        <p class="text-xs text-gray-400 mt-4">
+          Si desafinamos, es parte del show 😎
+        </p>
+      </div>
 
+      <!-- SOCIALS -->
+      <div class="flex justify-center gap-6 mt-8 text-sm text-gray-300">
+        <a href="#" class="hover:text-white transition">TikTok</a>
+        <a href="#" class="hover:text-white transition">Instagram</a>
+        <a href="#" class="hover:text-white transition">YouTube</a>
+      </div>
     </div>
 
-</body>
+    <!-- JS -->
+    <script>
+      const radio = document.getElementById("radio");
+      const playBtn = document.getElementById("playBtn");
+      const statusText = document.getElementById("statusText");
+      const liveBar = document.getElementById("liveBar");
+
+      let playing = false;
+      let barInterval = null;
+
+      function startLiveBar() {
+        liveBar.style.width = "100%";
+        barInterval = setInterval(() => {
+          liveBar.style.width = "0%";
+          setTimeout(() => {
+            liveBar.style.width = "100%";
+          }, 300);
+        }, 1500);
+      }
+
+      function stopLiveBar() {
+        clearInterval(barInterval);
+        liveBar.style.width = "0%";
+      }
+
+      playBtn.addEventListener("click", () => {
+        if (!playing) {
+          radio.play();
+          playBtn.innerText = "⏸️";
+          playBtn.classList.remove("animate-pulse");
+          statusText.innerText = "🔊 SONANDO";
+          startLiveBar();
+        } else {
+          radio.pause();
+          playBtn.innerText = "▶️";
+          playBtn.classList.add("animate-pulse");
+          statusText.innerText = "🟢 EN VIVO";
+          stopLiveBar();
+        }
+        playing = !playing;
+      });
+    </script>
+  </body>
 </html>

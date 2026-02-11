@@ -9,9 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
-  <body
-    class="bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen flex items-center justify-center"
-  >
+  <body class="bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md text-center px-6">
 
       <!-- LOGO -->
@@ -20,59 +18,44 @@
         <span class="text-[#075985]">FM</span>
       </h1>
 
-      <p class="text-gray-300 mb-8">
-        Humor 🎙️ · Música 🎶 · Cero vergüenza
-      </p>
+      <p class="text-gray-300 mb-8">Humor 🎙️ · Música 🎶 · Cero vergüenza</p>
 
       <!-- PLAYER CARD -->
       <div class="bg-gray-900 rounded-2xl p-6 shadow-xl">
 
         <!-- STATUS -->
-        <p id="statusText" class="text-sm text-green-400 mb-3">
-          🟢 EN VIVO
-        </p>
+        <p id="statusText" class="text-sm text-green-400 mb-3">🟢 EN VIVO</p>
 
-        <!-- AUDIO (hidden) -->
+        <!-- AUDIO -->
         <audio
           id="radio"
-          src="https://TU_STREAM_AQUI/stream"
+          src="http://localhost:8000/radio"
+          crossorigin="anonymous"
           preload="none"
         ></audio>
 
+        <!-- SELECTOR DE FUENTE -->
+
         <!-- CUSTOM PLAYER -->
-        <div
-          class="bg-white rounded-full flex items-center gap-4 px-5 py-3 shadow-lg"
-        >
+        <div class="bg-white rounded-full flex items-center gap-4 px-5 py-3 shadow-lg">
           <!-- PLAY BUTTON -->
           <button
             id="playBtn"
             aria-label="Reproducir radio"
-            class="w-12 h-12 rounded-full bg-[#2AA4D9] text-white text-xl
-                   flex items-center justify-center
-                   shadow-lg shadow-[#2AA4D9]/40
-                   hover:bg-[#1d8bbf]
-                   transition
-                   animate-pulse"
+            class="w-12 h-12 rounded-full bg-[#2AA4D9] text-white text-xl flex items-center justify-center shadow-lg shadow-[#2AA4D9]/40 hover:bg-[#1d8bbf] transition animate-pulse"
           >
             ▶️
           </button>
 
           <!-- LIVE INDICATOR BAR -->
           <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              id="liveBar"
-              class="h-full bg-[#075985] w-0 transition-all duration-500"
-            ></div>
+            <div id="liveBar" class="h-full bg-[#075985] w-0 transition-all duration-500"></div>
           </div>
 
-          <span class="text-sm font-semibold text-gray-600">
-            LIVE
-          </span>
+          <span class="text-sm font-semibold text-gray-600">LIVE</span>
         </div>
 
-        <p class="text-xs text-gray-400 mt-4">
-          Si desafinamos, es parte del show 😎
-        </p>
+        <p class="text-xs text-gray-400 mt-4">Si desafinamos, es parte del show 😎</p>
       </div>
 
       <!-- SOCIALS -->
@@ -89,6 +72,7 @@
       const playBtn = document.getElementById("playBtn");
       const statusText = document.getElementById("statusText");
       const liveBar = document.getElementById("liveBar");
+      const sourceSelect = document.getElementById("sourceSelect");
 
       let playing = false;
       let barInterval = null;
@@ -110,7 +94,7 @@
 
       playBtn.addEventListener("click", () => {
         if (!playing) {
-          radio.play();
+          radio.play().catch(err => console.log("Error reproduciendo el stream:", err));
           playBtn.innerText = "⏸️";
           playBtn.classList.remove("animate-pulse");
           statusText.innerText = "🔊 SONANDO";
@@ -123,6 +107,15 @@
           stopLiveBar();
         }
         playing = !playing;
+      });
+
+      // Cambiar fuente de radio
+      sourceSelect.addEventListener("change", () => {
+        const wasPlaying = playing;
+        radio.src = sourceSelect.value;
+        if (wasPlaying) {
+          radio.play().catch(err => console.log("Error reproduciendo el stream:", err));
+        }
       });
     </script>
   </body>
